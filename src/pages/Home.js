@@ -28,19 +28,13 @@ const windowImages = [
   '/assets/windows/sal window.jpg'
 ];
 
-// Category images
-const categoryImages = [
-  'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300',
-  'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=300',
-  'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=300',
-  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=300'
-];
+
 
 const Home = () => {
   const [featuredFurniture, setFeaturedFurniture] = useState([]);
   const [featuredDoors, setFeaturedDoors] = useState([]);
   const [featuredWindows, setFeaturedWindows] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addedProducts, setAddedProducts] = useState({});
   const { addToCart } = useCart();

@@ -50,10 +50,9 @@ const ProductDetail = () => {
     }
   }, [location.pathname]);
 
-  const isInCart = cartItems.some(item => item._id === product?._id && item.productType === productType);
-
   useEffect(() => {
     fetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, productType]);
 
   const fetchProduct = async () => {

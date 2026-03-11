@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { furnitureAPI, categoryAPI, woodAPI, doorAPI, windowAPI, lockerAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import { FaDoorOpen, FaWindowMaximize, FaCouch, FaThLarge, FaLock } from 'react-icons/fa';
@@ -32,10 +32,12 @@ const Products = () => {
     if (typeFromUrl && typeFromUrl !== filters.type) {
       setFilters(prev => ({ ...prev, type: typeFromUrl }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const fetchCategories = async () => {

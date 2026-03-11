@@ -13,6 +13,7 @@ const ManageOrders = () => {
   useEffect(() => {
     fetchOrders();
     fetchAgents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const fetchOrders = async () => {
