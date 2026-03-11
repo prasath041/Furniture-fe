@@ -1,0 +1,179 @@
+.booking-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.booking-page h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #2c3e50;
+}
+
+.booking-container {
+  background: white;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-summary {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.product-summary img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.product-summary h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.product-summary p {
+  color: #666;
+  margin: 5px 0;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.booking-summary {
+  background: #e8f5e9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.booking-summary h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.booking-summary p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.booking-summary .total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #27ae60;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid #27ae60;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Product Type Specific Styles */
+.booking-page h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.product-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.product-type-badge.door {
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+}
+
+.product-type-badge.window {
+  background: linear-gradient(135deg, #2c5f2d 0%, #3d8b40 100%);
+}
+
+.product-type-badge.furniture {
+  background: linear-gradient(135deg, #4a90a4 0%, #5ba3b8 100%);
+}
+
+/* Door Booking Styles */
+.door-booking h1 {
+  color: #8b4513;
+}
+
+.door-summary {
+  border-left: 4px solid #8b4513;
+}
+
+.btn-submit.door-btn {
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+}
+
+.btn-submit.door-btn:hover {
+  box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+}
+
+/* Window Booking Styles */
+.window-booking h1 {
+  color: #2c5f2d;
+}
+
+.window-summary {
+  border-left: 4px solid #2c5f2d;
+}
+
+.btn-submit.window-btn {
+  background: linear-gradient(135deg, #2c5f2d 0%, #3d8b40 100%);
+}
+
+.btn-submit.window-btn:hover {
+  box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+}
+
+@media (max-width: 768px) {
+  .product-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .product-summary img {
+    width: 100%;
+    max-width: 200px;
+  }
+}

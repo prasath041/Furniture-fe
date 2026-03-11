@@ -1,0 +1,333 @@
+.navbar {
+  background-color: #2c3e50;
+  color: white;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  width: 100%;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.navbar-logo .logo-image {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  background: white;
+  padding: 3px;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  gap: 15px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+}
+
+.navbar-menu li {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-menu a,
+.navbar-menu button {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.navbar-menu a:hover {
+  color: #3498db;
+}
+
+.btn-register {
+  background-color: #3498db;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+.btn-register:hover {
+  background-color: #2980b9;
+  color: white;
+}
+
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-btn {
+  padding: 6px 10px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.dropdown-btn:hover {
+  color: #3498db;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  margin-top: 10px;
+  z-index: 1001;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background-color: #f1f1f1;
+}
+
+.logout-btn {
+  color: #dc3545 !important;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Products Dropdown */
+.products-dropdown {
+  position: relative;
+}
+
+.products-dropdown-content {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  margin-top: 0;
+  padding-top: 10px;
+  z-index: 1001;
+  overflow: visible;
+  animation: fadeInDown 0.2s ease;
+}
+
+/* Bridge the gap between parent and dropdown */
+.products-dropdown-content::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: transparent;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  color: #333 !important;
+  padding: 14px 20px !important;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item.door-item:hover {
+  background-color: #fef3e8;
+  border-left-color: #8b4513;
+  color: #8b4513 !important;
+}
+
+.dropdown-item.window-item:hover {
+  background-color: #e8f5e9;
+  border-left-color: #2c5f2d;
+  color: #2c5f2d !important;
+}
+
+.dropdown-item.furniture-item:hover {
+  background-color: #e3f2fd;
+  border-left-color: #4a90a4;
+  color: #4a90a4 !important;
+}
+
+.dropdown-item.all-item {
+  border-top: 1px solid #eee;
+  font-weight: 600;
+  background: #f8f9fa;
+}
+
+.dropdown-item.all-item:hover {
+  background-color: #2c3e50;
+  color: white !important;
+}
+
+/* CNC Designs Link */
+.cnc-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #8B4513, #A0522D) !important;
+  padding: 6px 12px !important;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.85rem !important;
+}
+
+.cnc-link:hover {
+  background: linear-gradient(135deg, #A0522D, #8B4513) !important;
+  transform: scale(1.05);
+}
+
+/* Track Order Link */
+.track-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+/* Cart Icon Styles */
+.cart-link {
+  position: relative;
+  font-size: 1.2rem;
+}
+
+/* My Orders and CNC Orders links styling */
+.navbar-menu li a[href="/my-bookings"],
+.navbar-menu li a[href="/my-cnc-orders"] {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 1200px) {
+  .navbar-container {
+    max-width: 1600px;
+  }
+  
+  .navbar-menu {
+    gap: 20px;
+  }
+  
+  .navbar-menu a,
+  .navbar-menu button {
+    font-size: 0.95rem;
+  }
+  
+  .navbar-logo {
+    font-size: 1.6rem;
+  }
+}
+
+/* Responsive adjustments for medium screens */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .navbar-menu {
+    gap: 12px;
+  }
+  
+  .navbar-menu a,
+  .navbar-menu button {
+    font-size: 0.85rem;
+  }
+  
+  .navbar-logo {
+    font-size: 1.3rem;
+  }
+  
+  .cnc-link {
+    padding: 5px 10px !important;
+    font-size: 0.8rem !important;
+  }
+}
