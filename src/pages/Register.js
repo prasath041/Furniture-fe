@@ -52,7 +52,7 @@ const Register = () => {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        <h2>Register for FurnitureHub</h2>
+        <h2>Register for Sri Vasantham</h2>
         
         {error && <div className="error-message">{error}</div>}
         
