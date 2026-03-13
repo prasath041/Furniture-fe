@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaInfoCircle } from 'react-icons/fa';
-import googleLogo from '../assets/google-logo.svg';
+import googleLogo from '../assets/google-g-logo.svg';
 import './Login.css';
 
 const Login = () => {
