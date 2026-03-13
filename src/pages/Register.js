@@ -50,13 +50,13 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
+    <div className="auth-page register-page">
+      <div className="auth-container register-container">
         <h2>Register for Sri Vasantham</h2>
         
         {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form register-form">
           <div className="form-group">
             <label>Full Name</label>
             <input
@@ -90,7 +90,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group register-full-width">
             <label>Address</label>
             <textarea
               name="address"
@@ -122,7 +122,7 @@ const Register = () => {
             />
           </div>
 
-          <button type="submit" className="btn-submit" disabled={loading}>
+          <button type="submit" className="btn-submit register-full-width" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
