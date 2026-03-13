@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaGoogle, FaInfoCircle } from 'react-icons/fa';
+import { FaInfoCircle } from 'react-icons/fa';
+import googleLogo from '../assets/google-logo.svg';
 import './Login.css';
 
 const Login = () => {
@@ -96,7 +97,10 @@ const Login = () => {
           {googleLoading ? (
             <>Loading...</>
           ) : (
-            <><FaGoogle /> Continue with Google</>
+            <>
+              <img src={googleLogo} alt="Google" className="google-icon" />
+              Continue with Google
+            </>
           )}
         </button>
 
