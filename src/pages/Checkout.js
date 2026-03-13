@@ -78,6 +78,11 @@ const Checkout = () => {
     }
   };
 
+  const getProductModelName = (type) => {
+    const map = { door: 'Door', window: 'Window', locker: 'Locker', furniture: 'Furniture' };
+    return map[type] || 'Furniture';
+  };
+
   const handlePlaceOrder = async () => {
     setLoading(true);
     setError('');
@@ -90,6 +95,7 @@ const Checkout = () => {
 
         await bookingAPI.create({
           furniture: item._id,
+          productType: getProductModelName(item.productType),
           quantity: item.quantity,
           deliveryDate: deliveryDate.toISOString(),
           deliveryAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} ${shippingInfo.zipCode}, ${shippingInfo.country}`,
