@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { furnitureAPI, doorAPI, windowAPI } from '../services/api';
+import { furnitureAPI, doorAPI, windowAPI, lockerAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { FaShoppingCart, FaCheck, FaDoorOpen, FaWindowMaximize } from 'react-icons/fa';
+import { FaShoppingCart, FaCheck, FaDoorOpen, FaWindowMaximize, FaArchive } from 'react-icons/fa';
 import './ProductDetail.css';
 
 // Sample furniture images for demo
@@ -26,6 +26,11 @@ const windowImages = [
   '/assets/windows/sal window.jpg'
 ];
 
+// Locker images
+const lockerImages = [
+  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600'
+];
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -45,6 +50,8 @@ const ProductDetail = () => {
       setProductType('door');
     } else if (location.pathname.includes('/window/')) {
       setProductType('window');
+    } else if (location.pathname.includes('/locker/')) {
+      setProductType('locker');
     } else {
       setProductType('furniture');
     }
@@ -62,6 +69,8 @@ const ProductDetail = () => {
         response = await doorAPI.getById(id);
       } else if (productType === 'window') {
         response = await windowAPI.getById(id);
+      } else if (productType === 'locker') {
+        response = await lockerAPI.getById(id);
       } else {
         response = await furnitureAPI.getById(id);
       }
@@ -93,6 +102,8 @@ const ProductDetail = () => {
       navigate(`/booking/door/${id}`);
     } else if (productType === 'window') {
       navigate(`/booking/window/${id}`);
+    } else if (productType === 'locker') {
+      navigate(`/booking/locker/${id}`);
     } else {
       navigate(`/booking/${id}`);
     }
@@ -101,6 +112,7 @@ const ProductDetail = () => {
   const getDefaultImages = () => {
     if (productType === 'door') return doorImages;
     if (productType === 'window') return windowImages;
+    if (productType === 'locker') return lockerImages;
     return sampleImages;
   };
 
@@ -151,6 +163,9 @@ const ProductDetail = () => {
     }
     if (productType === 'window') {
       return <span className="product-type-label window"><FaWindowMaximize /> Wood Window</span>;
+    }
+    if (productType === 'locker') {
+      return <span className="product-type-label"><FaArchive /> Locker</span>;
     }
     return null;
   };

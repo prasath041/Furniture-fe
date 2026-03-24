@@ -1,16 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { furnitureAPI, bookingAPI, doorAPI, windowAPI } from '../services/api';
+import { furnitureAPI, bookingAPI, doorAPI, windowAPI, lockerAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getProductImage } from '../utils/imageUtils';
-import { FaDoorOpen, FaWindowMaximize, FaCouch } from 'react-icons/fa';
+import { FaDoorOpen, FaWindowMaximize, FaCouch, FaArchive } from 'react-icons/fa';
 import './BookingPage.css';
 
 // Default images
 const defaultImages = {
   furniture: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
   door: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-  window: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?w=400'
+  window: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?w=400',
+  locker: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400'
+};
+
+const getProductTypeFromPath = (pathname) => {
+  if (pathname.includes('/door/') || pathname.includes('/doors/')) return 'door';
+  if (pathname.includes('/window/') || pathname.includes('/windows/')) return 'window';
+  if (pathname.includes('/locker/') || pathname.includes('/lockers/')) return 'locker';
+  return 'furniture';
+};
+
+const getBookingModelName = (type) => {
+  const modelMap = {
+    furniture: 'Furniture',
+    door: 'Door',
+    window: 'Window',
+    locker: 'Locker'
+  };
+  return modelMap[type] || 'Furniture';
 };
 
 const BookingPage = () => {
@@ -18,12 +36,13 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const activeRequestRef = useRef(0);
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [productType, setProductType] = useState('furniture');
+  const productType = getProductTypeFromPath(location.pathname);
   
   const [bookingData, setBookingData] = useState({
     quantity: 1,
@@ -32,33 +51,38 @@ const BookingPage = () => {
     notes: ''
   });
 
-  // Determine product type from URL
   useEffect(() => {
-    if (location.pathname.includes('/door/')) {
-      setProductType('door');
-    } else if (location.pathname.includes('/window/')) {
-      setProductType('window');
-    } else {
-      setProductType('furniture');
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    fetchProduct();
+    fetchProduct(productType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, productType]);
 
-  const fetchProduct = async () => {
+  const fetchProduct = async (requestedType) => {
+    const requestId = Date.now();
+    activeRequestRef.current = requestId;
+    setLoading(true);
+    setError('');
+
     try {
       let response;
-      if (productType === 'door') {
+      if (requestedType === 'door') {
         response = await doorAPI.getById(id);
-      } else if (productType === 'window') {
+      } else if (requestedType === 'window') {
         response = await windowAPI.getById(id);
+      } else if (requestedType === 'locker') {
+        response = await lockerAPI.getById(id);
       } else {
         response = await furnitureAPI.getById(id);
       }
-      setProduct({ ...response.data.data, productType });
+
+      const productData = response?.data?.data;
+      if (!productData) {
+        throw new Error('Invalid product response');
+      }
+
+      // Ignore stale requests so old failures cannot overwrite current state.
+      if (activeRequestRef.current !== requestId) return;
+
+      setProduct({ ...productData, productType: requestedType });
       
       // Set minimum delivery date to tomorrow
       const tomorrow = new Date();
@@ -66,8 +90,11 @@ const BookingPage = () => {
       const minDate = tomorrow.toISOString().split('T')[0];
       setBookingData(prev => ({ ...prev, deliveryDate: minDate }));
     } catch (error) {
+      if (activeRequestRef.current !== requestId) return;
       setError('Error loading product');
+      setProduct(null);
     } finally {
+      if (activeRequestRef.current !== requestId) return;
       setLoading(false);
     }
   };
@@ -85,7 +112,8 @@ const BookingPage = () => {
     try {
       const bookingPayload = {
         furniture: id,
-        productType: productType,
+        product: id,
+        productType: getBookingModelName(productType),
         ...bookingData,
         quantity: parseInt(bookingData.quantity)
       };
@@ -104,6 +132,7 @@ const BookingPage = () => {
     switch (productType) {
       case 'door': return <FaDoorOpen />;
       case 'window': return <FaWindowMaximize />;
+      case 'locker': return <FaArchive />;
       default: return <FaCouch />;
     }
   };
@@ -112,6 +141,7 @@ const BookingPage = () => {
     switch (productType) {
       case 'door': return 'Wood Door';
       case 'window': return 'Wood Window';
+      case 'locker': return 'Locker';
       default: return 'Furniture';
     }
   };

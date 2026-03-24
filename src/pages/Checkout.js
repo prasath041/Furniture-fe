@@ -2,10 +2,24 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { bookingAPI } from '../services/api';
+import { orderAPI } from '../services/api';
 import { getProductImage } from '../utils/imageUtils';
-import { FaCreditCard, FaPaypal, FaMoneyBillWave, FaLock } from 'react-icons/fa';
+import { FaMoneyBillWave } from 'react-icons/fa';
 import './Checkout.css';
+
+const getOrderModelName = (productType) => {
+  const normalized = (productType || 'furniture').toLowerCase();
+  const modelMap = {
+    furniture: 'Furniture',
+    door: 'Door',
+    window: 'Window',
+    locker: 'Locker',
+    wood: 'Wood',
+    pipe: 'Pipe'
+  };
+
+  return modelMap[normalized] || 'Furniture';
+};
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -27,24 +41,12 @@ const Checkout = () => {
     country: 'USA'
   });
   
-  const [paymentInfo, setPaymentInfo] = useState({
-    method: 'card',
-    cardNumber: '',
-    cardName: '',
-    expiryDate: '',
-    cvv: ''
-  });
-
   const shipping = cartTotal >= 500 ? 0 : 50;
   const tax = cartTotal * 0.1;
   const total = cartTotal + shipping + tax;
 
   const handleShippingChange = (e) => {
     setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
-  };
-
-  const handlePaymentChange = (e) => {
-    setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
   };
 
   const validateShipping = () => {
@@ -60,12 +62,6 @@ const Checkout = () => {
   };
 
   const validatePayment = () => {
-    if (paymentInfo.method === 'card') {
-      if (!paymentInfo.cardNumber || !paymentInfo.cardName || !paymentInfo.expiryDate || !paymentInfo.cvv) {
-        setError('Please fill in all card details');
-        return false;
-      }
-    }
     setError('');
     return true;
   };
@@ -78,30 +74,35 @@ const Checkout = () => {
     }
   };
 
-  const getProductModelName = (type) => {
-    const map = { door: 'Door', window: 'Window', locker: 'Locker', furniture: 'Furniture' };
-    return map[type] || 'Furniture';
-  };
-
   const handlePlaceOrder = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // Create bookings for each cart item
-      for (const item of cartItems) {
-        const deliveryDate = new Date();
-        deliveryDate.setDate(deliveryDate.getDate() + 7); // 7 days delivery
+      const orderPayload = {
+        items: cartItems.map((item) => ({
+          product: item._id,
+          productType: getOrderModelName(item.productType),
+          quantity: item.quantity
+        })),
+        shippingAddress: {
+          street: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          zipCode: shippingInfo.zipCode,
+          phone: shippingInfo.phone
+        },
+        billingAddress: {
+          street: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          zipCode: shippingInfo.zipCode
+        },
+        paymentMethod: 'cod',
+        notes: `Cash on Delivery | Contact: ${shippingInfo.fullName} (${shippingInfo.email})`
+      };
 
-        await bookingAPI.create({
-          furniture: item._id,
-          productType: getProductModelName(item.productType),
-          quantity: item.quantity,
-          deliveryDate: deliveryDate.toISOString(),
-          deliveryAddress: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} ${shippingInfo.zipCode}, ${shippingInfo.country}`,
-          notes: `Payment Method: ${paymentInfo.method}`
-        });
-      }
+      await orderAPI.create(orderPayload);
 
       clearCart();
       navigate('/order-success');
@@ -249,108 +250,22 @@ const Checkout = () => {
               <h2>Payment Method</h2>
 
               <div className="payment-methods">
-                <label className={`payment-option ${paymentInfo.method === 'card' ? 'selected' : ''}`}>
-                  <input
-                    type="radio"
-                    name="method"
-                    value="card"
-                    checked={paymentInfo.method === 'card'}
-                    onChange={handlePaymentChange}
-                  />
-                  <FaCreditCard /> Credit/Debit Card
-                </label>
-                
-                <label className={`payment-option ${paymentInfo.method === 'paypal' ? 'selected' : ''}`}>
-                  <input
-                    type="radio"
-                    name="method"
-                    value="paypal"
-                    checked={paymentInfo.method === 'paypal'}
-                    onChange={handlePaymentChange}
-                  />
-                  <FaPaypal /> PayPal
-                </label>
-                
-                <label className={`payment-option ${paymentInfo.method === 'cod' ? 'selected' : ''}`}>
+                <label className="payment-option selected">
                   <input
                     type="radio"
                     name="method"
                     value="cod"
-                    checked={paymentInfo.method === 'cod'}
-                    onChange={handlePaymentChange}
+                    checked
+                    readOnly
                   />
                   <FaMoneyBillWave /> Cash on Delivery
                 </label>
               </div>
 
-              {paymentInfo.method === 'card' && (
-                <div className="card-details">
-                  <div className="form-group">
-                    <label>Card Number</label>
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      value={paymentInfo.cardNumber}
-                      onChange={handlePaymentChange}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength="19"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Name on Card</label>
-                    <input
-                      type="text"
-                      name="cardName"
-                      value={paymentInfo.cardName}
-                      onChange={handlePaymentChange}
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Expiry Date</label>
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        value={paymentInfo.expiryDate}
-                        onChange={handlePaymentChange}
-                        placeholder="MM/YY"
-                        maxLength="5"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>CVV</label>
-                      <input
-                        type="password"
-                        name="cvv"
-                        value={paymentInfo.cvv}
-                        onChange={handlePaymentChange}
-                        placeholder="***"
-                        maxLength="4"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="secure-note">
-                    <FaLock /> Your payment information is secure
-                  </div>
-                </div>
-              )}
-
-              {paymentInfo.method === 'paypal' && (
-                <div className="paypal-note">
-                  <p>You will be redirected to PayPal to complete your payment.</p>
-                </div>
-              )}
-
-              {paymentInfo.method === 'cod' && (
-                <div className="cod-note">
-                  <p>Pay with cash when your order is delivered.</p>
-                  <p className="cod-fee">Additional fee: $10.00</p>
-                </div>
-              )}
+              <div className="cod-note">
+                <p>Pay with cash when your order is delivered.</p>
+                <p className="cod-fee">Additional fee: ₹10.00</p>
+              </div>
 
               <div className="form-buttons">
                 <button onClick={() => setStep(1)} className="btn-back">
@@ -379,11 +294,7 @@ const Checkout = () => {
 
               <div className="review-section">
                 <h3>Payment Method</h3>
-                <p>
-                  {paymentInfo.method === 'card' && `Credit Card ending in ${paymentInfo.cardNumber.slice(-4)}`}
-                  {paymentInfo.method === 'paypal' && 'PayPal'}
-                  {paymentInfo.method === 'cod' && 'Cash on Delivery'}
-                </p>
+                <p>Cash on Delivery</p>
               </div>
 
               <div className="review-section">
@@ -442,15 +353,13 @@ const Checkout = () => {
               <span>Tax (10%)</span>
               <span>₹{tax.toLocaleString()}</span>
             </div>
-            {paymentInfo.method === 'cod' && (
-              <div className="summary-row">
-                <span>COD Fee</span>
-                <span>₹10</span>
-              </div>
-            )}
+            <div className="summary-row">
+              <span>COD Fee</span>
+              <span>₹10</span>
+            </div>
             <div className="summary-total">
               <span>Total</span>
-              <span>₹{(total + (paymentInfo.method === 'cod' ? 10 : 0)).toLocaleString()}</span>
+              <span>₹{(total + 10).toLocaleString()}</span>
             </div>
           </div>
         </div>
